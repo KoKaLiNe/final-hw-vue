@@ -3,65 +3,42 @@
     <input
       class="checkbox"
       type="checkbox"
-      :checked="isChecked"
-      :value="value"
+      v-model="checked"
+      :value="data.id"
+      :name="data.id"
       :id="id"
-      :name="name"
-      @change="updateInput"
     />
-    <label class="checkbox__label" :for="id">
-      <slot></slot>
-    </label>
+    <label class="checkbox__label" :for="id">{{ data.name }}</label>
   </div>
 </template>
 
 <script>
 export default {
-  model: {
-    prop: "modelValue",
-    event: "change",
-  },
   props: {
-    value: { type: String },
-    modelValue: { default: "" },
-    trueValue: { default: true },
-    falseValue: { default: false },
+    data: {
+      type: [Array, Object],
+      default() {
+        return { id: 1, name: "Checkbox", value: "checkbox" };
+      },
+    },
     id: {
       type: String,
-      default: "checkbox",
+      required: true,
+      default: "1",
     },
-    name: {
+    labelText: {
       type: String,
-      default: "checkbox",
+      default: "item 1",
     },
   },
   data() {
-    return {};
+    return {
+      checked: [],
+    };
   },
-  computed: {
-    isChecked() {
-      if (this.modelValue instanceof Array) {
-        return this.modelValue.includes(this.value);
-      }
-      return this.modelValue === this.trueValue;
-    },
-  },
-  methods: {
-    updateInput(event) {
-      let isChecked = event.target.checked;
-      if (this.modelValue instanceof Array) {
-        let newValue = [...this.modelValue];
-        if (isChecked) {
-          newValue.push(this.value);
-        } else {
-          newValue.splice(newValue.indexOf(this.value), 1);
-        }
-        this.$emit("change", newValue);
-      } else {
-        this.$emit("change", isChecked ? this.trueValue : this.falseValue);
-      }
-    },
-  },
+
+  methods: {},
+  watch: {},
 };
 </script>
 
@@ -72,7 +49,7 @@ export default {
   opacity: 0;
 
   &__label {
-    
+    font-family: 'Roboto', sans-serif;
     font-size: 16px;
     color: $fontColor;
     width: calc(100% + 10px);

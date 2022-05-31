@@ -1,11 +1,6 @@
 <template>
-  <button
-    class="btn"
-    :class="className"   
-    @click="click"
-    :disabled="disabled"
-  >
-    {{title}}
+  <button class="btn" :class="className" v-on="$listeners" :disabled="disabled">
+    <slot></slot>
   </button>
 </template>
 
@@ -14,7 +9,7 @@ export default {
   props: {
     title: {
       type: [String, Number],
-      default: "Button"
+      default: "Button",
     },
     primaryBtn: {
       type: Boolean,
@@ -31,24 +26,17 @@ export default {
     disabled: {
       type: Boolean,
       default: false,
-    }
+    },
   },
-
-  methods: {
-    click() {
-      this.$emit("click")
-    }
-  },
-
   computed: {
     className() {
       return {
-        'btn-primary': this.primaryBtn,
-        'btn-success': this.successBtn,
-        'btn-error': this.errorBtn,
-      }
-    }
-  }
+        "btn-primary": this.primaryBtn,
+        "btn-success": this.successBtn,
+        "btn-error": this.errorBtn,
+      };
+    },
+  },
 };
 </script>
 
@@ -63,6 +51,10 @@ export default {
   }
   &-error {
     @include btn-error;
+  }
+  &-link {
+    @include btn-link;
+    color: inherit;
   }
 }
 </style>

@@ -2,34 +2,46 @@
   <div>
     <textarea
       class="textarea"
-      :type="type"
-      :name="name"
-      :placeholder="placeholder"
-      :maxLength="maxLength"
-      :required="required"
+      :value="value"
+      v-bind="$attrs"
+      v-on="listeners"
       spellCheck
     />
-    <label :for="name" class="card__label label">
-      {{ labelText }}
-    </label>
   </div>
 </template>
 
 <script>
 export default {
+  inheritAttrs: false,
   props: {
-    type: {
-      type: String,
-      required: true,
+    value: String,
+  },
+  watch: {
+    inputText(val) {
+      this.$emit("input", val);
     },
-    name: {
-      type: String,
-      required: true,
+  },
+  mounted() {
+    this.inputText = this.value;
+  },
+  computed: {
+    listeners() {
+      var vm = this;
+      // `Object.assign` объединяет объекты вместе, чтобы получить новый объект
+      return Object.assign(
+        {},
+        // Мы добавляем все слушатели из родителя
+        this.$listeners,
+        // Затем мы можем добавить собственные слушатели или
+        // перезаписать поведение некоторых существующих.
+        {
+          // Это обеспечит, что будет работать v-model на компоненте
+          input: function (event) {
+            vm.$emit("input", event.target.value);
+          },
+        }
+      );
     },
-    placeholder: String,
-    maxLength: Number,
-    required: Boolean,
-    labelText: [String, Number],
   },
 };
 </script>

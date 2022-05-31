@@ -1,54 +1,59 @@
 <template>
   <div class="pagination__inner">
-    <Button
+    <CustomBtn
       class="btn-pagination"
       title="Назад"
-      :disabled="currentPage === 0"
+      :disabled="isPrevBtnDisabled"
       @click="prevPage"
-    />
-    <Button
-      v-for="index in pages"
-      :key="index"
+      >Назад</CustomBtn
+    >
+    <CustomBtn
+      v-for="page in totalPages"
+      :key="page"
       class="btn-pagination"
-      :class="{ active: activeBtn(index) }"
-      :title="index"
-      :value="index"
-      @click="handleChangePage(index)"
-    />
-    <Button
+      :class="{ active: activeBtn(page) }"
+      :title="page"
+      :value="page"
+      @click="handleChangePage(page)"
+      >{{ page }}</CustomBtn
+    >
+    <CustomBtn
       class="btn-pagination"
       title="Вперед"
-      :disabled="currentPage === pages - 1"
+      :disabled="isNextBtnDisabled"
       @click="nextPage"
-    />
+      >Вперед</CustomBtn
+    >
   </div>
 </template>
 
 <script>
 export default {
   props: {
-    dataArray: {
-      type: Array,
-      default() {
-        return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
-      },
-    },
-    size: {
+    itemsOnPage: {
       type: Number,
       default: 10,
     },
-    startStep: Number,
-    endStep: Number,
-    pages: Number,
+    firstItem: Number,
+    totalPages: Number,
   },
   data() {
     return {
       currentPage: 0,
+      lastItem: this.firstItem + this.itemsOnPage,
     };
   },
-methods: {
-    activeBtn(index) {
-      return this.currentPage === index - 1;
+  computed: {
+    isPrevBtnDisabled() {
+      return this.currentPage === 0 
+    },
+    isNextBtnDisabled() {
+      return this.currentPage === this.totalPages - 1
+    },
+  },
+  methods: {
+    activeBtn(page) {
+      return this.currentPage === page - 1;
     },
     nextPage() {
       console.log(this.currentPage);
@@ -59,11 +64,11 @@ methods: {
       this.currentPage--;
       this.$emit("prevPage", this.currentPage);
     },
-    handleChangePage(index) {
-      this.currentPage = index - 1;
-      this.$emit("handleChangePage", index);
+    handleChangePage(page) {
+      this.currentPage = page - 1;
+      this.$emit("handleChangePage", page);
     },
-}
+  },
 };
 </script>
 

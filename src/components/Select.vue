@@ -2,35 +2,25 @@
   <div class="select__item">
     <div class="select__wrapper">
       <div class="select__title">
-        <p>{{selectName}}</p>
-        <svg
-          class="select__arrow"
-          width="8"
-          height="6"
-          viewBox="0 0 8 6"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M3.07861 6L0 0H1.82084L3.48812 3.52304C3.59537 3.74706 3.69287 3.98916 3.78062 4.24932C3.86837 4.50948 3.92931 4.72809 3.96344 4.90515H4.02194C4.05606 4.72087 4.12188 4.50045 4.21938 4.2439C4.31688 3.98374 4.41682 3.74345 4.5192 3.52304L6.18647 0H8L4.92139 6H3.07861Z"
-            fill="#B5B5B5"
-          />
+        <p>{{ selectName }}</p>
+        <svg class="select__arrow" width="8" height="6">
+          <use :xlink:href="`#select-arrow`" />
         </svg>
       </div>
 
       <div class="checkbox__list">
         <div class="checkbox__wrapper">
-          <div
+          <Checkbox
             class="checkbox__item"
             v-for="(item, index) in data"
             :key="index"
+            :id="id + '-' + index"
+            v-model="selectedValues"
+            :value="item[itemValue]"
+            @change="onCahnge"
           >
-            <Checkbox
-              :id="id + '-' + index"
-              :labelText="id + '-' + index"
-              :data="item"
-            />
-          </div>
+            {{ item[itemName] }}
+          </Checkbox>
         </div>
       </div>
     </div>
@@ -49,12 +39,14 @@ export default {
       type: String,
       required: true,
     },
-    labelText: String,
+    itemValue: String,
+    itemName: String,
   },
   data() {
-    return {};
+    return {
+      selectedValues: [],
+    };
   },
-  methods: {},
 };
 </script>
 

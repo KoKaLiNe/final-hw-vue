@@ -2,18 +2,17 @@
   <div class="root">
     <div class="pagination">
       <Pager
-        :dataArray="dataArray"
-        :size="size"
-        :startStep="startStep"
-        :endStep="endStep"
-        :pages="pages"
+        :dataSize="dataSize"
+        :itemsOnPage="itemsOnPage"
+        :firstItem="firstItem"
+        :totalPages="totalPages"
         @nextPage="nextPage"
         @prevPage="prevPage"
         @handleChangePage="handleChangePage"
       />
       <span class="pagination__count"
-        >Показано {{ currentPage * size + 1 }} - {{ showntasks() }} из
-        {{ dataArray.length }}</span
+        >Показано {{ currentPage * itemsOnPage + 1 }} - {{ shownTasks() }} из
+        {{ dataSize }}</span
       >
     </div>
   </div>
@@ -24,22 +23,20 @@ export default {
   data() {
     return {
       currentPage: 0,
+      lastItem: this.firstItem + this.size,
     };
   },
   props: {
-    dataArray: {
-      type: Array,
-      default() {
-        return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
-      },
-    },
-    size: {
+    dataSize: {
       type: Number,
       default: 10,
     },
-    startStep: Number,
-    endStep: Number,
-    pages: Number,
+    itemsOnPage: {
+      type: Number,
+      default: 10,
+    },
+    firstItem: Number,
+    totalPages: Number,
   },
 
   methods: {
@@ -60,14 +57,14 @@ export default {
       this.$emit("handleChangePage", index);
     },
 
-    showntasks() {
+    shownTasks() {
       if (
         this.currentPage + 1 ===
-        Math.ceil(this.dataArray.length / this.size)
+        Math.ceil(this.dataSize / this.itemsOnPage)
       ) {
-        return this.dataArray.length;
+        return this.dataSize;
       } else {
-        return this.currentPage + 1 * this.size;
+        return this.currentPage + 1 * this.itemsOnPage;
       }
     },
   },

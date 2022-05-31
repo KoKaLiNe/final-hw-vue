@@ -1,31 +1,41 @@
 <template>
   <div>
-    <input
-      class="input"
-      :type="type"
-      :placeholder="placeholder"
-      :name="name"
-      :required="required"
-    />
-    <label :for="name" class="card__label label"> {{ labelText }} </label>
+    <input class="input" :value="value" v-bind="$attrs" v-on="listeners" />
   </div>
 </template>
 
 <script>
 export default {
+  inheritAttrs: false,
   props: {
-    type: {
-      type: String,
-      required: true,
-    },
-    name: {
-      type: String,
-      required: true,
-    },
-    placeholder: String,
-    required: Boolean,
-    labelText: [String, Number],
+    value: String,
   },
+  watch: {
+    inputText(val) {
+      this.$emit("input", val);
+    },
+  },
+  mounted() {
+    this.inputText = this.value;
+  },
+  computed: {
+        listeners() {
+                var vm = this
+            // `Object.assign` объединяет объекты вместе, чтобы получить новый объект
+            return Object.assign({},
+                // Мы добавляем все слушатели из родителя
+                this.$listeners,
+                // Затем мы можем добавить собственные слушатели или
+                // перезаписать поведение некоторых существующих.
+                {
+                // Это обеспечит, что будет работать v-model на компоненте
+                input: function (event) {
+                    vm.$emit('input', event.target.value)
+                }
+            }
+            )
+        }
+    },
 };
 </script>
 
