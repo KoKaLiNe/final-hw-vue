@@ -4,11 +4,11 @@
     <div class="wrapper left">
       <Select
         :data="dataArray"
-        v-model="selectedValues"
         id="filter-users"
         selectName="Пользователи"
         itemValue="id"
         itemName="username"
+        @change="updateSelect"
       />
     </div>
     Checkbox
@@ -21,13 +21,6 @@
       >
         {{ "Item 1" }}
       </Checkbox>
-    </div>
-    Dropdown
-    <div class="wrapper left">
-      <TaskMenu />
-    </div>
-    <div class="wrapper left">
-      <TaskMenu />
     </div>
     Input
     <div class="wrapper left">
@@ -72,14 +65,26 @@ export default {
   inheritAttrs: false,
   data() {
     return {
+      // link1: {
+      //   name: "Main",
+      //   params: {
+      //     page: "Main",
+      //   },
+      // },
+      // link2: {
+      //   name: "Main",
+      //   params: {
+      //     page: "Users",
+      //   },
+      // },
       textareaText: "",
       inputText: "",
+      selectedCheckbox: [],
       isActive: false,
       count: 0,
       currentPage: 0,
       itemsOnPage: 10,
-      selectedCheckbox: [],
-      selectedValues: [],
+      filter: null,
       dataArray: [
         {
           id: "6273dca5d09b551dca87629c",
@@ -134,24 +139,20 @@ export default {
       return this.dataArray.slice(this.firstItem, this.lastItem);
     },
   },
-  watch: {
-    inputText(val) {
-      this.$emit("input", val);
-    },
-    // textareaText(val) {
-    //   this.$emit("textarea", val);
-    // },
-  },
-  mounted() {
-    this.inputText = this.value;
-    // this.textareaText = this.textareaValue;
-  },
+  watch: {},
+  mounted() {},
   methods: {
-    handleNewData(data) {
-      (this.selectedValues = data), console.log(this.selectedValues);
-    },
-    input(e) {
-      return (this.text = e.target.value);
+    // goToView() {
+    //   this.$router.push({
+    //     name: "Users",
+    //     params: {
+    //       page: "Users",
+    //     },
+    //   });
+    // },
+    updateSelect(data) {
+      console.log(data);
+      return (this.filter = data);
     },
     click() {
       return (this.count += 1);
@@ -162,9 +163,6 @@ export default {
     },
     prevPage() {
       this.currentPage--;
-    },
-    handleChangePage(index) {
-      this.currentPage = index - 1;
     },
   },
 };

@@ -1,5 +1,5 @@
 <template>
-  <div class="select__item">
+  <div class="select__item" @change="onChange(selectedValues)">
     <div class="select__wrapper">
       <div class="select__title">
         <p>{{ selectName }}</p>
@@ -17,7 +17,6 @@
             :id="id + '-' + index"
             v-model="selectedValues"
             :value="item[itemValue]"
-            @change="onCahnge"
           >
             {{ item[itemName] }}
           </Checkbox>
@@ -47,37 +46,17 @@ export default {
       selectedValues: [],
     };
   },
+  methods: {
+    onChange() {
+      this.$emit("change", this.selectedValues);
+    },
+  },
+  mounted() {},
 };
 </script>
 
 <style lang="scss" scoped>
 .select {
-  &__item {
-    font-family: "Inter", sans-serif;
-    font-size: 14px;
-    color: $labelFontColor;
-    display: flex;
-    width: 100%;
-    height: 100%;
-    margin-right: 14px;
-
-    &.type {
-      max-width: 98px;
-    }
-
-    &.users {
-      max-width: 200px;
-    }
-
-    &.status {
-      max-width: 130px;
-    }
-
-    &.rank {
-      max-width: 120px;
-    }
-  }
-
   &__wrapper {
     display: flex;
     justify-content: space-between;

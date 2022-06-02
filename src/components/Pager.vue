@@ -34,12 +34,16 @@ export default {
       type: Number,
       default: 10,
     },
+    currentPage: {
+     type: Number,
+     default: 0,
+    },
     firstItem: Number,
     totalPages: Number,
   },
   data() {
     return {
-      currentPage: 0,
+      
       lastItem: this.firstItem + this.itemsOnPage,
     };
   },

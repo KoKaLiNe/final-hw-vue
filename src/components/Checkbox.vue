@@ -48,6 +48,7 @@ export default {
   },
   methods: {
     updateInput(event) {
+      
       let isChecked = event.target.checked;
       if (this.modelValue instanceof Array) {
         let newValue = [...this.modelValue];
@@ -98,7 +99,7 @@ export default {
   flex-shrink: 0;
   flex-grow: 0;
   border: 1px solid #333333;
-  background-color: #ffffff;
+  background-color: $boardBGColor;
   border-radius: 5px;
   margin-right: 5px;
   background-repeat: no-repeat;

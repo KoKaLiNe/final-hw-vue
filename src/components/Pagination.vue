@@ -6,6 +6,7 @@
         :itemsOnPage="itemsOnPage"
         :firstItem="firstItem"
         :totalPages="totalPages"
+        :currentPage="currentPage"
         @nextPage="nextPage"
         @prevPage="prevPage"
         @handleChangePage="handleChangePage"
@@ -22,11 +23,14 @@
 export default {
   data() {
     return {
-      currentPage: 0,
       lastItem: this.firstItem + this.size,
     };
   },
   props: {
+    currentPage: {
+      type: Number,
+      default: 0,
+    },
     dataSize: {
       type: Number,
       default: 10,
@@ -36,9 +40,12 @@ export default {
       default: 10,
     },
     firstItem: Number,
-    totalPages: Number,
   },
-
+  computed: {
+    totalPages() {
+      return Math.ceil(this.dataSize / this.itemsOnPage);
+    },
+  },
   methods: {
     activeBtn(index) {
       return this.currentPage === index - 1;
