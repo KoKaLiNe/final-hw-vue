@@ -59,9 +59,29 @@ export default {
     color: $labelFontColor;
   }
 
+  &__comment {
+    max-width: 458px;
+    height: 76px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+  }
+
+  &__modal {
+    height: 24px;
+    padding: 2.5px 10px;
+    margin-bottom: 20px;
+
+    &-comment {
+      height: 76px;
+      margin-bottom: 0;
+    }
+  }
+
   &-filter {
     height: 27px;
     padding: 2.5px 10px;
+    // margin: -1px;
+    // max-width: 527px;
   }
 }
 </style>

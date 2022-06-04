@@ -1,0 +1,128 @@
+<template>
+  <section>
+    <Header />
+    <router-view> </router-view>
+    <!-- <section class="main__wrapper">
+      <section class="board">
+        <div class="board__header">
+          <h2 class="board__header-title">Пользователи</h2>
+        </div>
+        <section class="board__content">
+          <div class="board__list">
+            <UserItem
+              v-for="user in users"
+              :key="user.id"
+              :user="user"
+              :currentUser="user"
+            />
+          </div>
+          <Pagination
+            :dataSize="users.length"
+            :itemsOnPage="itemsOnPage"
+            :firstItem="firstItem"
+            :totalPages="totalPages"
+            :currentPage="currentPage"
+          />
+        </section>
+      </section>
+    </section> -->
+  </section>
+</template>
+
+<script>
+export default {
+  // data() {
+  //   return {
+  //     // tasks: [
+  //     //   {
+  //     //     id: "6283fbbfb92d7606a744d81e",
+  //     //     userId: "6273dca5d09b551dca87629c",
+  //     //     assignedId: "6273dca5d09b551dca87629c",
+  //     //     title: "as",
+  //     //     description: "sdasdasd",
+  //     //     type: "bug",
+  //     //     dateOfCreation: "2022-05-17T19:47:11.349Z",
+  //     //     dateOfUpdate: "2022-05-29T16:22:22.400Z",
+  //     //     timeInMinutes: 7561,
+  //     //     status: "complete",
+  //     //     rank: "low",
+  //     //   },
+  //     //   {
+  //     //     id: "628588a978a8556d50224c89",
+  //     //     userId: "6273dca5d09b551dca87629c",
+  //     //     assignedId: "6273dca5d09b551dca87629c",
+  //     //     title: "12qwe",
+  //     //     description: "12qwe",
+  //     //     type: "task",
+  //     //     dateOfCreation: "2022-05-19T00:00:41.707Z",
+  //     //     dateOfUpdate: "2022-05-29T16:23:15.993Z",
+  //     //     timeInMinutes: 7387983,
+  //     //     status: "testing",
+  //     //     rank: "medium",
+  //     //   },
+  //     //   {
+  //     //     id: "6286521778a8556d50224c9e",
+  //     //     userId: "6273dca5d09b551dca87629c",
+  //     //     assignedId: "6273dca5d09b551dca87629c",
+  //     //     title: "wer",
+  //     //     description: "wer",
+  //     //     type: "bug",
+  //     //     dateOfCreation: "2022-05-19T14:20:07.403Z",
+  //     //     dateOfUpdate: "2022-05-28T19:59:58.952Z",
+  //     //     timeInMinutes: 1342,
+  //     //     status: "testing",
+  //     //     rank: "low",
+  //     //   },
+  //     // ],
+  //     users: [
+  //       {
+  //         id: "6273dca5d09b551dca87629c",
+  //         login: "SPB_Alexey_Kutilov",
+  //         password: "123",
+  //         username: "Алексей Кутилов",
+  //         about: "",
+  //         photoUrl: "",
+  //       },
+  //       {
+  //         id: "6273dcb7d09b551dca87629d",
+  //         login: "Alexius04",
+  //         password: "123",
+  //         username: "AlexDev04",
+  //         about: "WTF is your Python? \nIt's JavaScript, Bro!",
+  //         photoUrl:
+  //           "https://as-ecars.ru/wp-content/uploads/2019/06/electric-scooter-super-soco-02_1157353144.jpg",
+  //       },
+  //       {
+  //         id: "6273dcd2d09b551dca87629e",
+  //         login: "maxigroove",
+  //         password: "1Q2w3e4r5t",
+  //         username: "Артем Сорокин",
+  //         about: "Во славу Императору!",
+  //         photoUrl:
+  //           "https://avatars.mds.yandex.net/get-zen_doc/3994559/pub_6064c0224878ca659c8c08b6_6064cbccd5b01e21343bb760/scale_1200",
+  //       },
+  //     ],
+  //     currentPage: 0,
+  //     itemsOnPage: 10,
+  //   };
+  // },
+  // computed: {
+  //   firstItem() {
+  //     return this.currentPage * this.itemsOnPage;
+  //   },
+  //   lastItem() {
+  //     return this.firstItem + this.itemsOnPage;
+  //   },
+  //   totalPages() {
+  //     return Math.ceil(this.users.length / this.itemsOnPage);
+  //   },
+  //   paginatedData() {
+  //     return this.dataArray.slice(this.firstItem, this.lastItem);
+  //   },
+  // },
+};
+</script>
+
+<style lang="scss" scoped>
+//
+</style>

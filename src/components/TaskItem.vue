@@ -1,0 +1,155 @@
+<template>
+  <div class="board__item">
+    <router-link class="board__task-link" :to="linkToTask">
+      <div class="board__task-type">
+        <svg width="24" height="24" v-if="currentTask.type === 'bug'">
+          <use :xlink:href="`#type-bug`" />
+        </svg>
+        <svg width="24" height="24" v-if="currentTask.type === 'task'">
+          <use :xlink:href="`#type-task`" />
+        </svg>
+      </div>
+      <div class="board__task-header">
+        <h3>{{ currentTask.title }}</h3>
+      </div>
+      <div class="board__task-user">
+        <p>{{ assignedUserName }}</p>
+      </div>
+      <div class="board__task-status">
+        <TaskStatus :status="currentTask.status" />
+      </div>
+      <div class="board__task-rank">
+        <TaskRank :rank="currentTask.rank" />
+      </div>
+    </router-link>
+    <Dropdown :classContent="`task-menu`" :classBtn="`task-menu-btn`">
+      <template v-slot:dropdown-btn>
+        <svg width="10" height="12">
+          <use :xlink:href="`#burger`" />
+        </svg>
+      </template>
+      <template v-slot:dropdown-content>
+        <button type="button" class="dropdown-link" @click="editTask()">
+          Редактировать
+        </button>
+        <button type="button" class="dropdown-link accent">Удалить</button>
+        <button type="button" class="dropdown-link" value="inProgress">
+          Взять в работу
+        </button>
+        <button type="button" class="dropdown-link" value="testing">
+          На тестирование
+        </button>
+        <button type="button" class="dropdown-link" value="complete">
+          Сделано
+        </button>
+        <button type="button" class="dropdown-link" value="opened">
+          Переоткрыть
+        </button>
+      </template>
+    </Dropdown>
+  </div>
+</template>
+
+<script>
+export default {
+  props: {
+    currentTask: Object,
+    users: Array,
+    taskId: String,
+  },
+  data() {
+    return {
+      linkToTask: {
+        name: "Task",
+        params: {
+          taskId: this.currentTask.id,
+        },
+      },
+    };
+  },
+  computed: {
+    assignedUserName() {
+      return this.users.find((x) => x.id === this.currentTask.assignedId)
+        .username;
+    },
+  },
+  methods: {
+    editTask() {
+      this.$router.push({
+        name: "EditTask",
+        params: { taskId: this.taskId },
+      });
+    },
+  },
+};
+</script>
+
+<style lang="scss" scoped>
+.board {
+  &__item {
+    font-family: "Roboto", sans-serif;
+    @include flexible;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    height: 10%;
+    padding: 0 30px;
+
+    &:nth-child(2n) {
+      background-color: #f2f2f2;
+    }
+  }
+}
+
+.board__task {
+  &-link {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+
+    text-decoration: none;
+    color: inherit;
+  }
+
+  &-type {
+    width: 100%;
+    max-width: 78px;
+    margin-right: 14px;
+  }
+
+  &-header {
+    width: 100%;
+    max-width: 485px;
+    margin-right: 14px;
+
+    & a {
+      text-decoration: none;
+      color: inherit;
+    }
+  }
+
+  &-user {
+    width: 100%;
+    max-width: 200px;
+    margin-right: 14px;
+  }
+
+  &-status {
+    width: 100%;
+    max-width: 140px;
+    margin-right: 14px;
+  }
+
+  &-rank {
+    width: 100%;
+    max-width: 100px;
+  }
+
+  &-menu {
+    width: 100%;
+    max-width: 140px;
+  }
+}
+</style>

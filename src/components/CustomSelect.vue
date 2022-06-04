@@ -10,7 +10,7 @@
 
       <div class="checkbox__list">
         <div class="checkbox__wrapper">
-          <Checkbox
+          <CustomCheckbox
             class="checkbox__item"
             v-for="(item, index) in data"
             :key="index"
@@ -19,7 +19,7 @@
             :value="item[itemValue]"
           >
             {{ item[itemName] }}
-          </Checkbox>
+          </CustomCheckbox>
         </div>
       </div>
     </div>

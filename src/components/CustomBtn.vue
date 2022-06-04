@@ -56,5 +56,8 @@ export default {
     @include btn-link;
     color: inherit;
   }
+  &-board__header {
+    margin-left: 10px;
+  }
 }
 </style>

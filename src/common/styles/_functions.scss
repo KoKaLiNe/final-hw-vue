@@ -1,3 +1,0 @@
-@function color($color, $map: $theme-colors) {
-	@return map-get($map, $color)
-}

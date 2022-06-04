@@ -3,7 +3,7 @@
     <div
       class="dropdown-btn"
       :class="[classBtn, { active: isActive }]"
-      @click="toggle"
+      @click="toggle()"
       v-click-outside="hide"
     >
       <slot name="dropdown-btn"></slot>
@@ -18,11 +18,12 @@
 import ClickOutside from "vue-click-outside";
 
 export default {
+  data() {
+    return {
+      isActive: false,
+    };
+  },
   props: {
-    isActive: {
-      type: Boolean,
-      default: false,
-    },
     classContent: String,
     classBtn: String,
   },

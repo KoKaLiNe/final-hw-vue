@@ -1,13 +1,11 @@
 <template>
-  <div>
-    <textarea
-      class="textarea"
-      :value="value"
-      v-bind="$attrs"
-      v-on="listeners"
-      spellCheck
-    />
-  </div>
+  <textarea
+    class="textarea"
+    :value="value"
+    v-bind="$attrs"
+    v-on="listeners"
+    spellCheck
+  />
 </template>
 
 <script>
@@ -56,6 +54,25 @@ export default {
     font-family: "Inter", sans-serif;
     font-size: 14px;
     color: $labelFontColor;
+  }
+}
+
+.input {
+  &__comment {
+    max-width: 458px;
+    height: 76px;
+    margin-top: 8px;
+    margin-bottom: 10px;
+  }
+
+  &__title {
+    margin-bottom: 20px;
+  }
+  &__card {
+    &-description {
+      height: 607px;
+      margin-bottom: 0;
+    }
   }
 }
 </style>
