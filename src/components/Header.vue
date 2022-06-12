@@ -52,9 +52,6 @@ export default {
       isActive: false,
       linkToTaskList: {
         name: "TaskList",
-        params: {
-          // page: "tasks-List",
-        },
       },
       linkToTaskUsers: {
         name: "UsersList",

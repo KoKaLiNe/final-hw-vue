@@ -1,7 +1,7 @@
 <template>
   <div class="board__item">
     <div class="user__name">
-      <router-link :to="'#'"> {{ user.username }} </router-link>
+      <router-link :to="linkToUser"> {{ user.username }} </router-link>
     </div>
   </div>
 </template>

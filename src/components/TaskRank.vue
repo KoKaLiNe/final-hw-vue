@@ -1,33 +1,26 @@
 <template>
   <div>
-    <div class="task-prioirity low" v-if="rank === 'low'">
-      <svg width="14" height="8">
-        <use :xlink:href="`#status-high`" />
-      </svg>
-      <p>Низкий</p>
-    </div>
-
-    <div class="task-prioirity mid" v-if="rank === 'medium'">
+    <div class="task-prioirity" :class="rank">
       <svg width="14" height="6">
-        <use :xlink:href="`#status-mid`" />
+        <use :xlink:href="`#status-${rank}`" />
       </svg>
-      <p>Средний</p>
-    </div>
-
-    <div class="task-prioirity high" v-if="rank === 'high '">
-      <svg width="14" height="8">
-        <use :xlink:href="`#status-mid`" />
-      </svg>
-      <p>Высокий</p>
+      <p>{{ ranks[rank].name }}</p>
     </div>
   </div>
 </template>
 
 <script>
+import { ranks } from "../common/const";
 export default {
-    props: {
+  data() {
+    return {
+      ranks,
+    };
+  },
+  props: {
     rank: String,
-  }
+  },
+  mounted() {},
 };
 </script>
 
@@ -48,7 +41,7 @@ export default {
     color: $successColor;
   }
 
-  &.mid {
+  &.medium {
     color: #e9b500;
 
     & svg {

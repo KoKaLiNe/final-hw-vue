@@ -1,5 +1,5 @@
 <template>
-  <div class="pagination__inner">
+  <div v-if="isDataLoaded" class="pagination__inner">
     <CustomBtn
       class="btn-pagination"
       title="Назад"
@@ -29,30 +29,35 @@
 
 <script>
 export default {
+  data() {
+    return {};
+  },
   props: {
-    itemsOnPage: {
-      type: Number,
-      default: 10,
-    },
+    dataSize: Number,
     currentPage: {
-     type: Number,
-     default: 0,
+      type: Number,
+      default: 0,
     },
     firstItem: Number,
     totalPages: Number,
   },
   data() {
     return {
-      
-      lastItem: this.firstItem + this.itemsOnPage,
+      lastItem: this.firstItem + this.dataSize,
     };
   },
   computed: {
+    isDataLoaded() {
+      return this.totalPages > 0;
+    },
     isPrevBtnDisabled() {
-      return this.currentPage === 0 
+      return this.currentPagerPage === 0;
     },
     isNextBtnDisabled() {
-      return this.currentPage === this.totalPages - 1
+      return this.currentPagerPage === this.totalPages - 1;
+    },
+    currentPagerPage() {
+      return this.currentPage;
     },
   },
   methods: {
@@ -60,16 +65,12 @@ export default {
       return this.currentPage === page - 1;
     },
     nextPage() {
-      console.log(this.currentPage);
-      this.currentPage++;
-      this.$emit("nextPage", this.currentPage);
+      this.$emit("nextPage");
     },
     prevPage() {
-      this.currentPage--;
-      this.$emit("prevPage", this.currentPage);
+      this.$emit("prevPage");
     },
     handleChangePage(page) {
-      this.currentPage = page - 1;
       this.$emit("handleChangePage", page);
     },
   },

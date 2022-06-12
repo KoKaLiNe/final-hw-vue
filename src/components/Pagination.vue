@@ -22,19 +22,14 @@
 <script>
 export default {
   data() {
-    return {
-      lastItem: this.firstItem + this.size,
-    };
+    return {};
   },
   props: {
     currentPage: {
       type: Number,
       default: 0,
     },
-    dataSize: {
-      type: Number,
-      default: 10,
-    },
+    dataSize: Number,
     itemsOnPage: {
       type: Number,
       default: 10,
@@ -43,7 +38,8 @@ export default {
   },
   computed: {
     totalPages() {
-      return Math.ceil(this.dataSize / this.itemsOnPage);
+      if (this.dataSize > 0) return Math.ceil(this.dataSize / this.itemsOnPage);
+      else return 0;
     },
   },
   methods: {
@@ -51,19 +47,14 @@ export default {
       return this.currentPage === index - 1;
     },
     nextPage() {
-      console.log(this.currentPage);
-      this.currentPage++;
-      this.$emit("nextPage", this.currentPage);
+      this.$emit("nextPage");
     },
     prevPage() {
-      this.currentPage--;
-      this.$emit("prevPage", this.currentPage);
+      this.$emit("prevPage");
     },
-    handleChangePage(index) {
-      this.currentPage = index - 1;
-      this.$emit("handleChangePage", index);
+    handleChangePage(page) {
+      this.$emit("handleChangePage", page);
     },
-
     shownTasks() {
       if (
         this.currentPage + 1 ===
@@ -71,9 +62,12 @@ export default {
       ) {
         return this.dataSize;
       } else {
-        return this.currentPage + 1 * this.itemsOnPage;
+        return (this.currentPage + 1) * this.itemsOnPage;
       }
     },
+  },
+  mounted() {
+    this.filter;
   },
 };
 </script>

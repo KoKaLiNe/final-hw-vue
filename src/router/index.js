@@ -2,7 +2,7 @@ import VueRouter from "vue-router";
 import Main from "../view/Main";
 import TasksList from "../view/TasksList";
 import Task from "../view/Task";
-import Users from "../view/Users";
+import User from "../view/User";
 import UsersList from "../view/UsersList";
 import Edit from "../view/Edit";
 import error404 from "../view/error404";
@@ -34,9 +34,6 @@ const router = () => {
                         name: 'Task',
                         component: Task,
                         props: true,
-                        children: [
-
-                        ],
                     },
                     {
                         path: ':taskId/edit',
@@ -47,14 +44,20 @@ const router = () => {
                 ]
             },
             {
-                path: '/users',
-                component: Users,
+                path: '/users-list',
+                component: Main,
                 props: true,
                 children: [
                     {
                         path: '/',
                         name: 'UsersList',
                         component: UsersList,
+                        props: true,
+                    },
+                    {
+                        path: ':userId',
+                        name: 'User',
+                        component: User,
                         props: true,
                     },
                 ]

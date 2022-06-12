@@ -1,5 +1,5 @@
 <template>
-  <div class="card__wrap">
+  <div v-if="!tasksLoading" class="card__wrap">
     <div class="card__col col-1">
       <p class="card__title">Исполнитель</p>
       <p class="card__text">{{ userAssignedName }}</p>
@@ -24,9 +24,7 @@
         {{ taskTime }}
       </p>
 
-      <CustomBtn :class="'btn-primary  btn'"
-        >Сделать запись о работе
-      </CustomBtn>
+      <CustomBtn :primaryBtn="true">Сделать запись о работе </CustomBtn>
     </div>
 
     <div class="card__col col-2">
@@ -91,36 +89,53 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+import { statuses, ranks, types } from "../common/const";
 import moment from "moment";
 
 export default {
+  data() {
+    return {
+      statuses,
+      ranks,
+      types,
+    };
+  },
   props: {
     task: Object,
     users: Array,
   },
   computed: {
-    userAssignedName() {
-      return this.users.find((user) => user.id === this.task.assignedId)
-        .username;
-    },
-    userAuthorName() {
-      return this.users.find((user) => user.id === this.task.userId).username;
-    },
+    ...mapGetters("tasks", ["tasksLoading"]),
     taskType() {
-      if (this.task.type === "task") {
-        return "Задача";
-      } else if (this.task.type === "bug") {
-        return "Ошибка";
-      }
+      if (!_.isEmpty(this.task)) {
+        return types[this.task.type].name;
+      } else return "";
     },
     taskRank() {
-      if (this.task.rank === "low") {
-        return "Низкий";
-      } else if (this.task.type === "madium") {
-        return "Средний";
-      } else if (this.task.type === "high") {
-        return "Высокий";
+      if (!_.isEmpty(this.task)) {
+        return ranks[this.task.rank].name;
+      } else return "";
+    },
+    assignedId() {
+       if (!_.isEmpty(this.users))
+      return this.users.find((user) => user.id === this.task.assignedId);
+    },
+    userAssignedName() {
+      if (this.assignedId) {
+        return this.assignedId.username;
+      } else {
+        return "загрузка...";
       }
+    },
+    userId() {
+      return this.users.find((user) => user.id === this.task.userId);
+    },
+    userAuthorName() {
+      if (this.userId) {
+        return this.userId.username;
+      }
+      return "загрузка...";
     },
     dateOfCreation() {
       return moment(this.task.dateOfCreation).format("DD.MM.YYYY HH:MM");
@@ -158,6 +173,7 @@ export default {
       return fullTime;
     },
   },
+  mounted() {},
 };
 </script>
 
@@ -167,30 +183,6 @@ export default {
 
   &__col.create {
     border-right: none;
-  }
-
-  &__user-img {
-    width: 182px;
-    height: 182px;
-    @include border-radius(50%);
-    cursor: pointer;
-
-    &-wrapper {
-      width: 186px;
-      height: 186px;
-      background: conic-gradient(
-        #ff6161,
-        #7b61ff,
-        #ff6161,
-        #7b61ff,
-        #ff6161,
-        #7b61ff,
-        #ff6161
-      );
-      padding: 2.3px;
-      @include border-radius(50%);
-      margin-bottom: 20px;
-    }
   }
 
   &__title {

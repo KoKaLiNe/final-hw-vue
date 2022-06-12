@@ -31,7 +31,7 @@ export default {
   props: {
     selectName: String,
     data: {
-      type: Array,
+      type: [Object, Array],
       required: true,
     },
     id: {
@@ -40,6 +40,12 @@ export default {
     },
     itemValue: String,
     itemName: String,
+    selectedFilter: {
+      type: Array,
+      default() {
+        return [];
+      },
+    },
   },
   data() {
     return {
@@ -51,7 +57,9 @@ export default {
       this.$emit("change", this.selectedValues);
     },
   },
-  mounted() {},
+  mounted() {
+    this.selectedValues = this.selectedFilter;
+  },
 };
 </script>
 
@@ -68,7 +76,6 @@ export default {
       color: $fontColor;
       box-shadow: none;
       border: 1px solid #7b61ff;
-      // height: 24px;
       border-radius: 3px;
     }
 

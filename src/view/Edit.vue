@@ -16,15 +16,21 @@
       </div>
 
       <section class="board__content">
-        <div class="card__wrap">
+        <Spinner v-if="isLoading" class="spinner" line-fg-color="#7B61FF" />
+
+        <div v-if="!isLoading" class="card__wrap">
           <div class="card__col col-1">
-            <form class="field" onSubmit="{handleSubmit}">
+            <form
+              class="field"
+              id="add-task-form"
+              v-on:submit.prevent="saveData()"
+            >
               <label for="assignedUser" class="label">Исполнитель </label>
               <select
                 class="card__select select"
                 name="assignedId"
                 default
-                v-model="taskUser"
+                v-model="taskAssignedId"
               >
                 <option
                   v-for="user in users"
@@ -92,98 +98,44 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from "vuex";
+import { loggedUser } from "../common/const";
+import Spinner from "vue-simple-spinner";
+
 export default {
+  components: { Spinner },
   props: {
     taskId: String,
   },
   data() {
     return {
-      tasks: [
-        {
-          id: "6283fbbfb92d7606a744d81e",
-          userId: "6273dca5d09b551dca87629c",
-          assignedId: "6273dca5d09b551dca87629c",
-          title: "as",
-          description: "sdasdasd",
-          type: "bug",
-          dateOfCreation: "2022-05-17T19:47:11.349Z",
-          dateOfUpdate: "2022-05-29T16:22:22.400Z",
-          timeInMinutes: 7561,
-          status: "complete",
-          rank: "low",
-        },
-        {
-          id: "628588a978a8556d50224c89",
-          userId: "6273dca5d09b551dca87629c",
-          assignedId: "6273dca5d09b551dca87629c",
-          title: "12qwe",
-          description: "12qwe",
-          type: "task",
-          dateOfCreation: "2022-05-19T00:00:41.707Z",
-          dateOfUpdate: "2022-05-29T16:23:15.993Z",
-          timeInMinutes: 7387983,
-          status: "testing",
-          rank: "medium",
-        },
-        {
-          id: "6286521778a8556d50224c9e",
-          userId: "6273dca5d09b551dca87629c",
-          assignedId: "6273dca5d09b551dca87629c",
-          title: "wer",
-          description: "wer",
-          type: "bug",
-          dateOfCreation: "2022-05-19T14:20:07.403Z",
-          dateOfUpdate: "2022-05-28T19:59:58.952Z",
-          timeInMinutes: 1342,
-          status: "testing",
-          rank: "low",
-        },
-      ],
-      users: [
-        {
-          id: "6273dca5d09b551dca87629c",
-          login: "SPB_Alexey_Kutilov",
-          password: "123",
-          username: "Алексей Кутилов",
-          about: "",
-          photoUrl: "",
-        },
-        {
-          id: "6273dcb7d09b551dca87629d",
-          login: "Alexius04",
-          password: "123",
-          username: "AlexDev04",
-          about: "WTF is your Python? \nIt's JavaScript, Bro!",
-          photoUrl:
-            "https://as-ecars.ru/wp-content/uploads/2019/06/electric-scooter-super-soco-02_1157353144.jpg",
-        },
-        {
-          id: "6273dcd2d09b551dca87629e",
-          login: "maxigroove",
-          password: "1Q2w3e4r5t",
-          username: "Артем Сорокин",
-          about: "Во славу Императору!",
-          photoUrl:
-            "https://avatars.mds.yandex.net/get-zen_doc/3994559/pub_6064c0224878ca659c8c08b6_6064cbccd5b01e21343bb760/scale_1200",
-        },
-      ],
+      loggedUser,
+      id: "",
       taskTitle: "",
       taskDescription: "",
-      taskUser: "",
-      taskType: "task",
-      taskStatus: "low",
+      taskAssignedId: "",
+      taskType: "",
+      taskStatus: "",
     };
   },
   computed: {
-    editTitle() {
-      if (this.taskId) {
-        return "Редактирование";
+    ...mapGetters("tasks", ["tasksLoading", "tasks", "currentTask"]),
+    ...mapGetters("users", ["usersLoading", "users"]),
+    isLoading() {
+      if (this.tasksLoading && this.usersLoading) {
+        return true;
       }
-      return "Создание";
     },
-    currentTask() {
-      if (this.taskId)
-        return this.tasks.find((task) => task.id === this.taskId);
+    editTitle() {
+      return this.taskId ? "Редактирование" : "Создание";
+    },
+    taskAssignedIdFill() {
+      if (this.taskId) {
+        return this.currentTask.assignedId;
+      } else if (!this.taskId && (!_.isEmpty(this.users))) {
+        console.log(this.users[0].id);
+        return this.users[0].id;
+      }
     },
     taskTitleFill() {
       if (this.taskId) {
@@ -191,18 +143,11 @@ export default {
       }
       return "";
     },
-
     taskDescriptionFill() {
       if (this.taskId) {
         return this.currentTask.description;
       }
       return "";
-    },
-    taskUserFill() {
-      if (this.taskId) {
-        return this.currentTask.assignedId;
-      }
-      return this.users[0].id;
     },
     taskTypeFill() {
       if (this.taskId) {
@@ -216,13 +161,49 @@ export default {
       }
       return "low";
     },
+    dateOfCreation() {
+      return this.currentTask.dateOfCreation;
+    },
+  },
+  methods: {
+    ...mapActions("tasks", ["fetchTasks", "editTask", "getCurrentTask"]),
+    ...mapActions("users", ["setUsersLimit"]),
+    saveData() {
+      this.editTask({
+        id: this.id,
+        userId: this.loggedUser.id,
+        assignedId: this.taskAssignedId,
+        title: this.taskTitle,
+        description: this.taskDescription,
+        type: this.taskType,
+        dateOfCreation: new Date(),
+        dateOfUpdate: new Date(),
+        rank: this.taskStatus,
+      })
+        .then(() => {
+          if (this.taskId) this.getCurrentTask(this.taskId);
+        })
+        .then(() => history.back());
+    },
+    fillInputData() {
+      this.id = (this.taskId && this.currentTask.id) || "";
+      this.taskTitle = this.taskTitleFill;
+      this.taskDescription = this.taskDescriptionFill;
+      this.taskAssignedId = this.taskAssignedIdFill;
+      this.taskType = (this.taskId && this.taskTypeFill) || "task";
+      this.taskStatus = (this.taskId && this.taskStatusFill) || "low";
+    },
   },
   mounted() {
-    this.taskTitle = this.taskTitleFill;
-    this.taskDescription = this.taskDescriptionFill;
-    this.taskUser = this.taskUserFill;
-    this.taskType = this.taskTypeFill;
-    this.taskStatus = this.taskStatusFill;
+    if (this.taskId) {
+      this.getCurrentTask(this.taskId).then(() =>
+        this.setUsersLimit(0).then(() => this.fillInputData())
+      );
+    } else {
+      this.fetchTasks().then(() =>
+        this.setUsersLimit(0).then(() => this.fillInputData())
+      );
+    }
   },
 };
 </script>

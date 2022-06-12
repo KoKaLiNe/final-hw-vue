@@ -1,10 +1,11 @@
 <template>
   <div class="filter">
     <CustomSelect
-      :data="type"
+      :data="types"
       id="filter-type"
       selectName="Тип"
       :class="'type'"
+      :selectedFilter="selectedType"
       itemValue="value"
       itemName="name"
       @change="filterType"
@@ -23,33 +24,39 @@
       id="filter-user"
       selectName="Пользователи"
       :class="'users'"
+      :selectedFilter="selectedUser"
       itemValue="id"
       itemName="username"
       @change="filterUser"
     />
     <CustomSelect
-      :data="status"
+      :data="statuses"
       id="filter-status"
       selectName="Статус"
       :class="'status'"
+      :selectedFilter="selectedStatus"
       itemValue="value"
       itemName="name"
       @change="filterStatus"
     />
     <CustomSelect
-      :data="rank"
+      :data="ranks"
       id="filter-rank"
       selectName="Приоритет"
       :class="'rank'"
+      :selectedFilter="selectedRank"
       itemValue="value"
       itemName="name"
       @change="filterRank"
     />
-    <CustomBtn :primaryBtn="true" v-text="'Применить'" />
+    <CustomBtn @click="setFilter()" :primaryBtn="true" v-text="'Применить'" />
   </div>
 </template>
 
 <script>
+import { mapGetters, mapActions } from "vuex";
+import { types, ranks, statuses } from "../common/const";
+
 export default {
   props: {
     tasks: Array,
@@ -57,42 +64,9 @@ export default {
   },
   data() {
     return {
-      type: [
-        { name: "Задача", value: "task" },
-        { name: "Ошибка", value: "bug" },
-      ],
-      status: [
-        {
-          name: "Открыто",
-          value: "opened",
-        },
-        {
-          name: "В работе",
-          value: "inProgress",
-        },
-        {
-          name: "Тестирование",
-          value: "testing",
-        },
-        {
-          name: "Сделано",
-          value: "complete",
-        },
-      ],
-      rank: [
-        {
-          name: "Низкий",
-          value: "low",
-        },
-        {
-          name: "Средний",
-          value: "medium",
-        },
-        {
-          name: "Высокий",
-          value: "high",
-        },
-      ],
+      types,
+      ranks,
+      statuses,
       typeFilter: [],
       taskTheme: "",
       userFilter: [],
@@ -100,7 +74,9 @@ export default {
       rankFilter: [],
     };
   },
+
   methods: {
+    ...mapActions("tasks", ["filterTasks"]),
     filterType(value) {
       this.typeFilter = value;
     },
@@ -113,6 +89,39 @@ export default {
     filterRank(value) {
       this.rankFilter = value;
     },
+    setFilter() {
+      this.filterTasks({
+        filter: {
+          query: this.taskTheme || this.tasksFilter.query,
+          assignedUsers: this.userFilter || this.selectedUser,
+          type: this.typeFilter || this.selectedType,
+          status: this.statusFilter || this.selectedStatus,
+          rank: this.rankFilter || this.selectedRank,
+        },
+      });
+    },
+  },
+  computed: {
+    ...mapGetters("tasks", ["tasksFilter"]),
+    selectedType() {
+      return this.tasksFilter.type;
+    },
+    selectedUser() {
+      return this.tasksFilter.assignedUsers;
+    },
+    selectedStatus() {
+      return this.tasksFilter.status;
+    },
+    selectedRank() {
+      return this.tasksFilter.rank;
+    },
+  },
+  mounted() {
+    this.taskTheme = this.tasksFilter.query;
+    this.typeFilter = this.tasksFilter.type;
+    this.userFilter = this.tasksFilter.user;
+    this.statusFilter = this.tasksFilter.status;
+    this.rankFilter = this.tasksFilter.rank;
   },
 };
 </script>
