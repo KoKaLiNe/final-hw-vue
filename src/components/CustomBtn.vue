@@ -43,6 +43,7 @@ export default {
 <style lang="scss" scoped>
 .btn {
   @include btn-default;
+  height: 24px;
   &-primary {
     @include btn-primary;
   }
@@ -58,6 +59,14 @@ export default {
   }
   &-board__header {
     margin-left: 10px;
+    padding-top: 1px;
+  }
+  &__comment {
+    color: $errorColor;
+  }
+  &-submit {
+    width: 100%;
+    margin-top: 10px;
   }
 }
 </style>

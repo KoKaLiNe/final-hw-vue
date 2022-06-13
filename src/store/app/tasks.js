@@ -9,6 +9,7 @@ export const mutation = {
     SET_TASKS_LIMIT: 'SET_TASKS_LIMIT',
     SET_TASKS_TOTAL: 'SET_TASKS_TOTAL',
     SET_CURRENT_TASKS: 'SET_CURRENT_TASKS',
+    SET_TASK_COMMENTS: 'SET_TASK_COMMENTS',
 }
 
 export default {
@@ -21,6 +22,7 @@ export default {
         tasksLimit: 10,
         tasksTotal: null,
         currentTask: {},
+        taskComments: [],
     },
 
     getters: {
@@ -31,6 +33,7 @@ export default {
         tasksLimit: state => state.tasksLimit,
         tasksTotal: state => state.tasksTotal,
         currentTask: state => state.currentTask,
+        taskComments: state => state.taskComments,
     },
 
     mutations: {
@@ -54,6 +57,9 @@ export default {
         },
         [mutation.SET_CURRENT_TASKS]: (state, data) => {
             state.currentTask = data || {}
+        },
+        [mutation.SET_TASK_COMMENTS]: (state, data) => {
+            state.taskComments = data || []
         },
     },
 
@@ -105,11 +111,10 @@ export default {
         },
         editStatus: ({ dispatch, commit }, { taskId, status }) => {
             dispatch('setTasksLoading', true)
-            api.Tasks.editStatus(taskId, status)
+            return api.Tasks.editStatus(taskId, status)
                 .then(({ data }) => {
                     commit(mutation.SET_CURRENT_TASKS, data);
                 })
-                .then(() => dispatch('fetchTasks'), { filter: {}, page: 0, limit: 0 })
         },
         filterTasks: ({ dispatch, commit }, { filter }) => {
             dispatch('setTasksLoading', true);
@@ -117,6 +122,21 @@ export default {
             commit(mutation.SET_TASKS_PAGE, 0)
             dispatch('fetchTasks')
         },
-
+        fetchTaskComments: ({ dispatch, commit }, taskId) => {
+            dispatch('setTasksLoading', true);
+            return api.Tasks.getComments(taskId)
+                .then(({ data }) => { commit(mutation.SET_TASK_COMMENTS, data) })
+                .then(() => dispatch('setTasksLoading', false))
+        },
+        addComment: ({ dispatch, commit }, { data, taskId }) => {
+            dispatch('setTasksLoading', true);
+            return api.Tasks.addComment(data)
+                .then(() => { dispatch('fetchTaskComments', taskId) })
+        },
+        deletComment: ({ dispatch, commit }, {id, taskId}) => {
+            dispatch('setTasksLoading', true);
+            return api.Tasks.deletComment(id)
+                .then(() => { dispatch('fetchTaskComments', taskId) })
+        },
     }
 }

@@ -5,8 +5,7 @@
 </template>
 
 <script>
-export default {
-};
+export default {};
 </script>
 
 <style lang="scss" scoped>
@@ -100,6 +99,7 @@ textarea {
     @include flexible;
     align-items: center;
     margin-bottom: 20px;
+    line-height: 2em;
 
     &-title {
       @include font($size: 24px, $weight: 300);
@@ -123,6 +123,7 @@ textarea {
 
     &-btns {
       display: flex;
+      align-items: center;
       text-align: end;
     }
   }

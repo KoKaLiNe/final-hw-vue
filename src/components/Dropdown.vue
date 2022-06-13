@@ -91,6 +91,7 @@ export default {
     font-family: "Inter", sans-serif;
     font-weight: 400;
     font-size: 12px;
+    width: 100%;
     line-height: 14px;
     text-decoration: none;
     color: $fontColor;

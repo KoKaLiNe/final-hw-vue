@@ -60,6 +60,7 @@ export default {
       "currentTask",
     ]),
     ...mapGetters("users", [
+      "loggedUser",
       "usersLoading",
       "users",
       "usersFilter",
@@ -73,13 +74,14 @@ export default {
     firstItem() {
       return this.tasksPage * this.tasksLimit;
     },
+
   },
   methods: {
     ...mapActions("tasks", ["fetchTasks", "setCurrentPage"]),
     ...mapActions("users", ["fetchUsers", "setUsersLimit"]),
 
     addTask() {
-      this.$router.push({ name: "AddTask", params: {} });
+      this.$router.push({ name: "AddTask"});
     },
     nextPage() {
       this.setCurrentPage(this.tasksPage + 1);

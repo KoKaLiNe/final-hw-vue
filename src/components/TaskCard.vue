@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!tasksLoading" class="card__wrap">
+  <div class="card__wrap">
     <div class="card__col col-1">
       <p class="card__title">Исполнитель</p>
       <p class="card__text">{{ userAssignedName }}</p>
@@ -33,80 +33,68 @@
     </div>
 
     <div class="card__col col-3">
-      <form class="card__form" method="post" onSubmit="{handleSubmit}">
+      <form
+        class="card__form"
+        v-on:submit.prevent="sendComment()"
+        id="add-task-comment"
+      >
         <label for="comment" class="card__title label"
-          >Комментарии ({{ "comments.length" }})
+          >Комментарии ({{ comments.length }})
         </label>
         <CustomTextarea
-          onChange="{handleFieldChange}"
+          v-model="commentText"
           class="input__comment input"
-          id="text"
+          id="comment"
           type="text"
-          name="text"
+          name="comment"
           placeholder="Текст комментария"
           required
-        >
-          commentForm.text</CustomTextarea
-        >
-        <CustomBtn :successBtn="true" type="submit">
+        ></CustomTextarea>
+        <CustomBtn :successBtn="true" type="submit" form="add-task-comment">
           Добавить комментарий
         </CustomBtn>
       </form>
-
       <div class="card__comments">
-        <!-- {comments.map((comment) => { return (
-        <div class="card__comment comment" key="{comment.id}">
-          <div class="comment__title">
-            <p class="comment__user-name">
-              { (((users.data.find(x => x.id === comment.userId) !== undefined)
-              && users.data.find(x => x.id === comment.userId).username)) ||
-              ("не указан") } ({moment(comment.dateOfUpdate).format('DD.MM.YYYY
-              HH:MM')})
-            </p>
-
-            {loggedUser.id === comment.userId &&
-            <button
-              onClick="{handelDeletComment}"
-              type="button"
-              class="btn__comment btn-link btn currentUser"
-              value="{comment.id}"
-            >
-              Удалить</button
-            >}
-          </div>
-          <p class="comment__text">{comment.text}</p>
-        </div>
-        ) }) } -->
+        <TaskComment
+          v-for="comment in comments"
+          :key="comment.id"
+          :comment="comment"
+          :users="users"
+          :loggedUser="loggedUser"
+        />
       </div>
     </div>
   </div>
   <!-- <Modal
-                isVisible={isModal}
-                onClose={() => setModal(false)}
-                tasks={tasks}
-                setComments={setComments}
-            /> -->
+   isVisible={isModal}
+   onClose={() => setModal(false)}
+   tasks={tasks}
+   setComments={setComments}
+   /> -->
 </template>
 
 <script>
-import { mapGetters } from "vuex";
-import { statuses, ranks, types } from "../common/const";
+import { mapActions } from "vuex";
+import { loggedUser, statuses, ranks, types } from "../common/const";
 import moment from "moment";
 
 export default {
   data() {
     return {
+      loggedUser,
       statuses,
       ranks,
       types,
+      commentText: "",
     };
   },
   props: {
+    taskId: String,
     task: Object,
+    comments: Array,
     users: Array,
   },
   computed: {
-    ...mapGetters("tasks", ["tasksLoading"]),
     taskType() {
       if (!_.isEmpty(this.task)) {
         return types[this.task.type].name;
@@ -118,8 +106,8 @@ export default {
       } else return "";
     },
     assignedId() {
-       if (!_.isEmpty(this.users))
-      return this.users.find((user) => user.id === this.task.assignedId);
+      if (!_.isEmpty(this.users))
+        return this.users.find((user) => user.id === this.task.assignedId);
     },
     userAssignedName() {
       if (this.assignedId) {
@@ -171,6 +159,20 @@ export default {
         " " +
         decOfNum(Math.floor(min % 60), ["минута", "минуты", "минут"]);
       return fullTime;
+    },
+  },
+  methods: {
+    ...mapActions("tasks", ["fetchTaskComments", "addComment"]),
+    sendComment() {
+      this.addComment({
+        data: {
+          taskId: this.taskId,
+          userId: this.loggedUser.id,
+          text: this.commentText,
+        },
+        taskId: this.taskId,
+      })
+      .then(() => {this.commentText = ""})
     },
   },
   mounted() {},

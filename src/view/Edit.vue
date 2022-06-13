@@ -106,6 +106,7 @@ export default {
   components: { Spinner },
   props: {
     taskId: String,
+    userId: String,
   },
   data() {
     return {
@@ -130,10 +131,12 @@ export default {
       return this.taskId ? "Редактирование" : "Создание";
     },
     taskAssignedIdFill() {
+      console.log("this.userId", this.userId);
       if (this.taskId) {
         return this.currentTask.assignedId;
-      } else if (!this.taskId && (!_.isEmpty(this.users))) {
-        console.log(this.users[0].id);
+      } else if (this.userId) {
+        return this.userId;
+      } else if (!this.taskId && !_.isEmpty(this.users)) {
         return this.users[0].id;
       }
     },

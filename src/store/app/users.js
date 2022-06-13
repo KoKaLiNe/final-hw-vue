@@ -8,6 +8,7 @@ export const mutation = {
     SET_USERS_LIMIT: 'SET_USERS_LIMIT',
     SET_USERS_TOTAL: 'SET_USERS_TOTAL',
     SET_CURRENT_USER: 'SET_CURRENT_USER',
+    SET_LOGGED_USER: 'SET_LOGGED_USER',
 }
 
 export default {
@@ -15,6 +16,7 @@ export default {
     state: {
         usersLoading: false,
         users: [],
+        loggedUser: {},
         currentUser: {},
         usersFilter: {},
         usersPage: 0,
@@ -25,6 +27,7 @@ export default {
     getters: {
         usersLoading: state => state.usersLoading,
         users: state => state.users,
+        loggedUser: state => state.loggedUser,
         currentUser: state => state.currentUser,
         usersFilter: state => state.usersFilter,
         usersPage: state => state.usersPage,
@@ -41,6 +44,9 @@ export default {
         },
         [mutation.SET_CURRENT_USER]: (state, data) => {
             state.currentUser = data || {}
+        },
+        [mutation.SET_LOGGED_USER]: (state, data) => {
+            state.loggedUser = data || {}
         },
         [mutation.SET_USERS_FILTER]: (state, data) => {
             state.usersFilter = data || {}
@@ -88,6 +94,10 @@ export default {
                     commit(mutation.SET_CURRENT_USER, data);
                     dispatch('setUsersLoading', false)
                 })
+            )
+        },
+        getLoggedUser: ({ dispatch, commit }, { login, password }) => {
+            return (api.Users.loginIn(login, password)
             )
         },
     }

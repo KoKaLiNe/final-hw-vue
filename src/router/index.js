@@ -5,7 +5,8 @@ import Task from "../view/Task";
 import User from "../view/User";
 import UsersList from "../view/UsersList";
 import Edit from "../view/Edit";
-import error404 from "../view/error404";
+import Login from "../view/Login";
+import Error404 from "../view/Error404";
 
 Vue.use(VueRouter);
 const router = () => {
@@ -14,6 +15,7 @@ const router = () => {
         routes: [
             {
                 path: '/tasks-list',
+                name: 'Main',
                 component: Main,
                 props: true,
                 children: [
@@ -60,14 +62,25 @@ const router = () => {
                         component: User,
                         props: true,
                     },
+                    {
+                        path: ':userId/add-task',
+                        name: 'UserAddTask',
+                        component: Edit,
+                        props: true,
+                    },
                 ]
             },
-
-            { path: '/', redirect: { name: 'TaskList' } },
+            {
+                path: '/login',
+                name: 'Login',
+                component: Login,
+                props: true,
+            },
+            { path: '/', redirect: { name: 'Login' } },
             {
                 path: '*',
                 name: 'error404',
-                component: error404,
+                component: Error404,
                 props: true,
             },
 

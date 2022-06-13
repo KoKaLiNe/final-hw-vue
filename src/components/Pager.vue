@@ -82,6 +82,7 @@ export default {
   &-pagination {
     margin-right: 5px;
     padding: 0 7.5px;
+    height: 24px;
 
     &.active {
       @include btn-primary;

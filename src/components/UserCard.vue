@@ -4,7 +4,7 @@
       <div class="card__user-img-wrapper">
         <img
           class="card__user-img"
-          :src="user.photoUrl"
+          :src="setUserPicture"
           width="182"
           height="182"
           alt="Изображение профиля"
@@ -23,10 +23,11 @@
           :users="user"
           :currentTask="task"
           :status="task.status"
+          :userId="userId"
         />
       </div>
       <Pagination
-        v-if="isLoading"
+        v-if="tasks.length > 0"
         :dataSize="tasks.length"
         :itemsOnPage="itemsOnPage"
         :firstItem="firstItem"
@@ -52,17 +53,15 @@ export default {
   props: {
     user: Object,
     tasks: Array,
+    userId: String,
   },
   computed: {
     ...mapGetters("users", ["usersLoading", "currentUser"]),
 
     isLoading() {
-      if (!this.usersLoading && this.tasks.length > 0) {
+      if (!this.usersLoading) {
         return true;
       } else return false;
-    },
-    paginatedData() {
-      return this.tasks.slice(this.firstItem, this.lastItem);
     },
     firstItem() {
       return this.currentPage * this.itemsOnPage;
@@ -70,8 +69,17 @@ export default {
     lastItem() {
       return this.firstItem + this.itemsOnPage;
     },
+    paginatedData() {
+      return this.tasks.slice(this.firstItem, this.lastItem);
+    },
+    setUserPicture() {
+      if (this.user.photoUrl === null || this.user.photoUrl === undefined) {
+        return "./static/images/defualt-user-icon.png";
+      } else return this.user.photoUrl;
+    },
   },
   methods: {
+    ...mapActions("tasks", ["fetchTasks"]),
     nextPage() {
       this.currentPage++;
     },
@@ -81,7 +89,8 @@ export default {
     handleChangePage(index) {
       this.currentPage = index - 1;
     },
-    
+  },
+  mounted() {
   },
 };
 </script>

@@ -40,6 +40,27 @@ export default api => {
 				url: `tasks/${taskId}/status/${status}`
 			})
 		},
+		getComments(taskId) {
+			return api.instance.request({
+				method: 'get',
+				url: `comments/${taskId}`
+			})
+		},
+		addComment(data) {
+			return api.instance.request({
+				method: 'put',
+				url: `comments/createOrEdit`,
+				data: {
+					...data,
+				},
+			})
+		},
+		deletComment(id) {
+			return api.instance.request({
+				method: 'delete',
+				url: `comments/${id}`,
+			})
+		},
 	},
 
 		api.Users = {
@@ -58,6 +79,16 @@ export default api => {
 				return api.instance.request({
 					method: 'get',
 					url: `users/${userId}`,
+				})
+			},
+			loginIn(login, password) {
+				return api.instance.request({
+					method: 'post',
+					url: `users/login`,
+					data: {
+						'login': `${login}`,
+						'password': `${password}`
+					}
 				})
 			},
 		}

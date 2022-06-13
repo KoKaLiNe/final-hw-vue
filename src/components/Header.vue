@@ -3,7 +3,7 @@
     <svg width="120" height="20">
       <use :xlink:href="'#logo'" />
     </svg>
-    <section class="main__header-wrap" v-if="!error404">
+    <section class="main__header-wrap" v-if="!isLoginOrError">
       <div class="main__header-group-link">
         <router-link
           :to="linkToTaskList"
@@ -21,11 +21,11 @@
       <Dropdown :classContent="`user-menu`">
         <template v-slot:dropdown-btn>
           <div class="dropdown-btn__user">
-            <span class="main__user-name">Неопознанный гусь</span>
+            <span class="main__user-name">{{ loggedUser.username }}</span>
             <div class="main__user-img-wrapper">
               <img
                 class="main__user-img"
-                src="../assets/images/defualt-user-icon.png"
+                :src="profileImage"
                 width="40"
                 height="40"
                 alt="Изображение профиля"
@@ -34,8 +34,12 @@
           </div>
         </template>
         <template v-slot:dropdown-content>
-          <a href="#" class="dropdown-link">Посмотреть профиль</a>
-          <a class="dropdown-link accent">Выйти из системы</a>
+          <router-link :to="linkToUser" class="dropdown-link"
+            >Посмотреть профиль</router-link
+          >
+          <button to="#" @click="loggedOut()" class="dropdown-link accent">
+            Выйти из системы
+          </button>
         </template>
       </Dropdown>
     </section>
@@ -46,6 +50,7 @@
 export default {
   props: {
     error404: Boolean,
+    loginForm: Boolean,
   },
   data() {
     return {
@@ -59,14 +64,45 @@ export default {
           page: "users",
         },
       },
+      linkToUser: {
+        name: "User",
+        params: {
+          userId: JSON.parse(localStorage.getItem("loggedUserInfo")).id,
+        },
+      },
     };
+  },
+  computed: {
+    isLoginOrError() {
+      return this.error404 || this.loginForm;
+    },
+    loggedUser() {
+      return JSON.parse(localStorage.getItem("loggedUserInfo"));
+    },
+    profileImage() {
+      if (
+        this.loggedUser.photoUrl === null ||
+        this.loggedUser.photoUrl === undefined
+      ) {
+        console.log("картинки нет");
+        return "./static/images/defualt-user-icon.png";
+      } else {
+        return this.loggedUser.photoUrl;
+      }
+    },
   },
   methods: {
     toggle() {
       this.isActive = !this.isActive;
       this.$emit("toggle");
     },
+    loggedOut() {
+      localStorage.removeItem("loggedUserInfo");
+      localStorage.removeItem("userPassword");
+      this.$router.replace({ name: "Login" });
+    },
   },
+  mounted() {},
 };
 </script>
 

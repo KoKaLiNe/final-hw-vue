@@ -58,6 +58,9 @@ export default {
     font-size: 14px;
     color: $labelFontColor;
   }
+  &__login {
+    margin-bottom: 20px;
+  }
 
   &__comment {
     max-width: 458px;

@@ -35,7 +35,13 @@
       <section class="board__content">
         <section class="card">
           <Spinner v-if="isLoading" class="spinner" line-fg-color="#7B61FF" />
-          <TaskCard v-if="!isLoading" :task="currentTask" :users="users" />
+          <TaskCard
+            v-if="!isLoading"
+            :task="currentTask"
+            :taskId="taskId"
+            :users="users"
+            :comments="taskComments"
+          />
         </section>
       </section>
     </section>
@@ -55,20 +61,27 @@ export default {
     return {};
   },
   computed: {
-    ...mapGetters("tasks", ["tasksLoading", "tasks", "currentTask"]),
+    ...mapGetters("tasks", [
+      "tasksLoading",
+      "tasks",
+      "currentTask",
+      "taskComments",
+    ]),
     ...mapGetters("users", ["usersLoading", "users"]),
     isLoading() {
       if (this.tasksLoading && this.usersLoading) {
         return true;
       }
+      return false;
     },
   },
   methods: {
-    ...mapActions("tasks", ["getCurrentTask", "deletTask"]),
+    ...mapActions("tasks", [
+      "getCurrentTask",
+      "deletTask",
+      "fetchTaskComments",
+    ]),
     ...mapActions("users", ["fetchUsers", "setUsersLimit"]),
-    handleDelete() {
-      console.log("метод удаления");
-    },
     editTask() {
       this.$router.push({
         name: "EditTask",
@@ -83,6 +96,7 @@ export default {
   mounted() {
     this.getCurrentTask(this.taskId);
     this.setUsersLimit(0);
+    this.fetchTaskComments(this.taskId);
   },
 };
 </script>

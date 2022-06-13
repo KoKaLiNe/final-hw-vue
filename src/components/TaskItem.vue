@@ -125,6 +125,7 @@ export default {
     users: [Array, Object],
     taskId: String,
     status: String,
+    userId: String,
   },
   data() {
     return {
@@ -161,7 +162,13 @@ export default {
     },
   },
   methods: {
-    ...mapActions("tasks", ["deletTask", "editStatus"]),
+    ...mapActions("tasks", [
+      "deletTask",
+      "editStatus",
+      "fetchTasks",
+      "fetchAllTasks",
+    ]),
+    ...mapActions("users", ["setUsersLimit"]),
     editTask() {
       this.$router.push({
         name: "EditTask",
@@ -172,7 +179,20 @@ export default {
       this.deletTask(this.taskId);
     },
     changeStatus(status) {
-      this.editStatus({ taskId: this.taskId, status });
+      if (this.userId) {
+        this.editStatus({ taskId: this.taskId, status })
+          .then(() => {
+            this.fetchAllTasks();
+          })
+          .then(() => {
+            this.setUsersLimit(0);
+          });
+      } else {
+        this.editStatus({ taskId: this.taskId, status })
+        .then(() => {
+            this.fetchTasks();
+          });
+      }
     },
   },
 };
