@@ -104,8 +104,6 @@ export default {
             commit(mutation.SET_LOGGED_USER, data)
         },
         editUser: ({ dispatch }, { data }) => {
-            console.log(data);
-            console.log(data.id);
             return api.Users.editUser(data)
                 .then(() => dispatch('getCurrentUser', data.id))
         }
