@@ -174,7 +174,7 @@ textarea {
   padding-right: 10px;
   appearance: none;
   overflow: hidden;
-  background: url("./assets/icons/select-arrow.svg") no-repeat center;
+  background: url("./assets/images/select-arrow.svg") no-repeat center;
   background-position: 98%;
 }
 

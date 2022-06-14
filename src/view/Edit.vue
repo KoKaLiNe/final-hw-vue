@@ -11,7 +11,9 @@
           >
             Сохранить
           </CustomBtn>
-          <CustomBtn class="btn-board__header"> Отмена </CustomBtn>
+          <CustomBtn class="btn-board__header" @click="cancelChange()">
+            Отмена
+          </CustomBtn>
         </div>
       </div>
 
@@ -131,7 +133,6 @@ export default {
       return this.taskId ? "Редактирование" : "Создание";
     },
     taskAssignedIdFill() {
-      console.log("this.userId", this.userId);
       if (this.taskId) {
         return this.currentTask.assignedId;
       } else if (this.userId) {
@@ -195,6 +196,9 @@ export default {
       this.taskAssignedId = this.taskAssignedIdFill;
       this.taskType = (this.taskId && this.taskTypeFill) || "task";
       this.taskStatus = (this.taskId && this.taskStatusFill) || "low";
+    },
+    cancelChange() {
+      history.back();
     },
   },
   mounted() {

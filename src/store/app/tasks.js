@@ -133,10 +133,19 @@ export default {
             return api.Tasks.addComment(data)
                 .then(() => { dispatch('fetchTaskComments', taskId) })
         },
-        deletComment: ({ dispatch, commit }, {id, taskId}) => {
+        deletComment: ({ dispatch, commit }, { id, taskId }) => {
             dispatch('setTasksLoading', true);
             return api.Tasks.deletComment(id)
                 .then(() => { dispatch('fetchTaskComments', taskId) })
         },
+        addWorktime: ({ dispatch }, { taskId, data }) => {
+            dispatch('setTasksLoading', true);
+            return api.Tasks.addWorktime(taskId, data)
+                .then(() => {
+                    dispatch('getCurrentTask', taskId);
+                    dispatch('fetchTaskComments', taskId)
+                })
+                .then(() => dispatch('setTasksLoading', false))
+        }
     }
 }

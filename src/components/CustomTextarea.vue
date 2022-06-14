@@ -5,6 +5,7 @@
     v-bind="$attrs"
     v-on="listeners"
     spellCheck
+    :class="className"
   />
 </template>
 
@@ -13,6 +14,7 @@ export default {
   inheritAttrs: false,
   props: {
     value: String,
+    className: String,
   },
   watch: {
     inputText(val) {

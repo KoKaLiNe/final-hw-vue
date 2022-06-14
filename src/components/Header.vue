@@ -47,6 +47,8 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from "vuex";
+
 export default {
   props: {
     error404: Boolean,
@@ -73,18 +75,15 @@ export default {
     };
   },
   computed: {
+    ...mapGetters("users", ["loggedUser"]),
     isLoginOrError() {
       return this.error404 || this.loginForm;
-    },
-    loggedUser() {
-      return JSON.parse(localStorage.getItem("loggedUserInfo"));
     },
     profileImage() {
       if (
         this.loggedUser.photoUrl === null ||
         this.loggedUser.photoUrl === undefined
       ) {
-        console.log("картинки нет");
         return "./static/images/defualt-user-icon.png";
       } else {
         return this.loggedUser.photoUrl;
@@ -92,6 +91,7 @@ export default {
     },
   },
   methods: {
+    ...mapActions("users", ["setLoggedUser"]),
     toggle() {
       this.isActive = !this.isActive;
       this.$emit("toggle");
@@ -99,10 +99,15 @@ export default {
     loggedOut() {
       localStorage.removeItem("loggedUserInfo");
       localStorage.removeItem("userPassword");
+      this.setLoggedUser({});
       this.$router.replace({ name: "Login" });
     },
   },
-  mounted() {},
+  mounted() {
+    if (localStorage.loggedUserInfo.length > 0 && (_.isEmpty(this.loggedUser))) {
+      this.setLoggedUser(JSON.parse(localStorage.getItem("loggedUserInfo")));
+    }
+  },
 };
 </script>
 

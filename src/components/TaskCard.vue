@@ -24,7 +24,70 @@
         {{ taskTime }}
       </p>
 
-      <CustomBtn :primaryBtn="true">Сделать запись о работе </CustomBtn>
+      <CustomBtn :primaryBtn="true" @click="onClose()"
+        >Сделать запись о работе
+      </CustomBtn>
+      <Modal v-show="isModalOpen">
+        <template v-slot:header>
+          <h3 class="modal__title">Запись о работе</h3>
+        </template>
+        <template v-slot:body>
+          <form class="modal__field field" id="add-work-time-form">
+            <label for="timeInMinutes" class="modal__label label"
+              >Затраченное время
+            </label>
+            <CustomInput
+              type="text"
+              v-model="timeModal"
+              :className="`input__modal input__title`"
+              name="timeInMinutes"
+              placeholder="Введите количество затраченного времени"
+              required
+            ></CustomInput>
+            <label for="timeUnit" class="modal__label label"
+              >Единицы измерения
+            </label>
+            <select
+              v-model="timeUnit"
+              class="modal__select select"
+              name="timeUnit"
+              id="timeUnit"
+            >
+              <option value="minute" checked>Минуты</option>
+              <option value="hour">Часы</option>
+              <option value="day">Дни</option>
+            </select>
+
+            <label for="timeComment" class="modal__label label"
+              >Комментарий</label
+            >
+            <CustomTextarea
+              type="text"
+              v-model="timeComment"
+              :className="`modal__textarea input`"
+              name="timeComment"
+              placeholder="Добавьте комментарий"
+              spellCheck
+            ></CustomTextarea>
+          </form>
+        </template>
+        <template v-slot:footer>
+          <div class="modal__footer-btns">
+            <CustomBtn
+              type="submit"
+              class="btn-board__header"
+              :primaryBtn="true"
+              form="user-edit-form"
+              @click="submit($event)"
+            >
+              Добавить
+            </CustomBtn>
+            <CustomBtn class="btn-board__header" @click="onClose()">
+              Отмена
+            </CustomBtn>
+          </div>
+        </template>
+      </Modal>
     </div>
 
     <div class="card__col col-2">
@@ -65,27 +128,24 @@
       </div>
     </div>
   </div>
-  <!-- <Modal
-   isVisible={isModal}
-   onClose={() => setModal(false)}
-   tasks={tasks}
-   setComments={setComments}
-   /> -->
 </template>
 
 <script>
-import { mapActions } from "vuex";
-import { loggedUser, statuses, ranks, types } from "../common/const";
+import { mapActions, mapGetters } from "vuex";
+import { statuses, ranks, types } from "../common/const";
 import moment from "moment";
 
 export default {
   data() {
     return {
-      loggedUser,
       statuses,
       ranks,
       types,
       commentText: "",
+      isModalOpen: false,
+      timeModal: "",
+      timeUnit: "minute",
+      timeComment: "",
     };
   },
   props: {
@@ -95,6 +155,10 @@ export default {
     users: Array,
   },
   computed: {
+    ...mapGetters("users", ["loggedUser"]),
+    loggedUser() {
+      return JSON.parse(localStorage.getItem("loggedUserInfo"));
+    },
     taskType() {
       if (!_.isEmpty(this.task)) {
         return types[this.task.type].name;
@@ -162,7 +226,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions("tasks", ["fetchTaskComments", "addComment"]),
+    ...mapActions("tasks", ["fetchTaskComments", "addComment", "addWorktime"]),
     sendComment() {
       this.addComment({
         data: {
@@ -171,8 +235,58 @@ export default {
           text: this.commentText,
         },
         taskId: this.taskId,
-      })
-      .then(() => {this.commentText = ""})
+      }).then(() => {
+        this.commentText = "";
+      });
+    },
+    onClose() {
+      this.isModalOpen = !this.isModalOpen;
+    },
+    submit(event) {
+      event.preventDefault();
+      if (this.timeUnit === "minute") {
+        this.addWorktime({
+          taskId: this.taskId,
+          data: {
+            timeInMinutes: this.timeModal,
+            comment: this.timeComment,
+            currentUser: this.loggedUser.id,
+          },
+        }).then(() => {
+          this.timeModal = "";
+          this.timeUnit = "minute";
+          this.timeComment = "";
+          this.onClose();
+        });
+      } else if (this.timeUnit === "hour") {
+        this.addWorktime({
+          taskId: this.taskId,
+          data: {
+            timeInMinutes: this.timeModal * 60,
+            comment: this.timeComment,
+            currentUser: this.loggedUser.id,
+          },
+        }).then(() => {
+          this.timeModal = "";
+          this.timeUnit = "minute";
+          this.timeComment = "";
+          this.onClose();
+        });
+      } else if (this.timeUnit === "day") {
+        this.addWorktime({
+          taskId: this.taskId,
+          data: {
+            timeInMinutes: this.timeModal * 60 * 24,
+            comment: this.timeComment,
+            currentUser: this.loggedUser.id,
+          },
+        }).then(() => {
+          this.timeModal = "";
+          this.timeUnit = "minute";
+          this.timeComment = "";
+          this.onClose();
+        });
+      }
     },
   },
   mounted() {},

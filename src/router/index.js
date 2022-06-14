@@ -15,7 +15,6 @@ const router = () => {
         routes: [
             {
                 path: '/tasks-list',
-                name: 'Main',
                 component: Main,
                 props: true,
                 children: [

@@ -17,6 +17,7 @@ export default {
         usersLoading: false,
         users: [],
         loggedUser: {},
+        password: null,
         currentUser: {},
         usersFilter: {},
         usersPage: 0,
@@ -97,8 +98,16 @@ export default {
             )
         },
         getLoggedUser: ({ dispatch, commit }, { login, password }) => {
-            return (api.Users.loginIn(login, password)
-            )
+            return (api.Users.loginIn(login, password))
         },
+        setLoggedUser: ({commit}, data) => {
+            commit(mutation.SET_LOGGED_USER, data)
+        },
+        editUser: ({ dispatch }, { data }) => {
+            console.log(data);
+            console.log(data.id);
+            return api.Users.editUser(data)
+                .then(() => dispatch('getCurrentUser', data.id))
+        }
     }
 }

@@ -71,7 +71,6 @@ export default {
 
   &__modal {
     height: 24px;
-    padding: 2.5px 10px;
     margin-bottom: 20px;
 
     &-comment {
@@ -83,8 +82,6 @@ export default {
   &-filter {
     height: 27px;
     padding: 2.5px 10px;
-    // margin: -1px;
-    // max-width: 527px;
   }
 }
 </style>

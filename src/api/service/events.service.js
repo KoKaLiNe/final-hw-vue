@@ -50,9 +50,7 @@ export default api => {
 			return api.instance.request({
 				method: 'put',
 				url: `comments/createOrEdit`,
-				data: {
-					...data,
-				},
+				data
 			})
 		},
 		deletComment(id) {
@@ -61,6 +59,13 @@ export default api => {
 				url: `comments/${id}`,
 			})
 		},
+		addWorktime(taskId, data) {
+			return api.instance.request({
+				method: 'patch',
+				url: `tasks/${taskId}/worktime`,
+				data
+			})
+		}
 	},
 
 		api.Users = {
@@ -91,5 +96,15 @@ export default api => {
 					}
 				})
 			},
+			editUser(data) {
+				return api.instance.request({
+					method: 'put',
+					url: `users/edit`,
+					data: {
+						...data
+					}
+				})
+
+			}
 		}
 }

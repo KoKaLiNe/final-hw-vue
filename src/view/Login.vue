@@ -55,7 +55,6 @@ export default {
     };
   },
   computed: {
-    ...mapGetters("users", ["loggedUser"]),
   },
   methods: {
     ...mapActions("users", ["getLoggedUser"]),
